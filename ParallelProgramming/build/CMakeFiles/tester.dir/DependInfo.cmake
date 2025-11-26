@@ -1,14 +1,16 @@
-
-# Consider dependencies only in project.
-set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
-
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
+  "CUDA"
   )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_CUDA
+  "/home/yukino/ParallelProgramming/src/tester.cu" "/home/yukino/ParallelProgramming/build/CMakeFiles/tester.dir/src/tester.cu.o"
+  )
+set(CMAKE_CUDA_COMPILER_ID "NVIDIA")
 
-# The set of dependency files which are needed:
-set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/yukino/workDir/ParallelProgramming/src/tester.cu" "CMakeFiles/tester.dir/src/tester.cu.o" "gcc" "CMakeFiles/tester.dir/src/tester.cu.o.d"
+# The include file search paths:
+set(CMAKE_CUDA_TARGET_INCLUDE_PATH
+  "../include"
   )
 
 # Targets to which this target links.

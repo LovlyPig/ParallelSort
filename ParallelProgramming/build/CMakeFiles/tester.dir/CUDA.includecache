@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/cpu_support.h
+cstdio
+-
+cstdlib
+-
+sys/time.h
+-
+vector
+-
+algorithm
+-
+functional
+-
+gpu_support.h
+../include/gpu_support.h
+
+../include/gpu_support.h
+cuda_runtime.h
+-
+vector
+-
+
+/home/yukino/ParallelProgramming/src/tester.cu
+iostream
+-
+string
+-
+vector
+-
+iomanip
+-
+algorithm
+-
+cpu_support.h
+/home/yukino/ParallelProgramming/src/cpu_support.h
+
