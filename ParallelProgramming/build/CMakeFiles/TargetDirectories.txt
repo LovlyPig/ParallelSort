@@ -1,0 +1,3 @@
+/home/yukino/workDir/ParallelProgramming/build/CMakeFiles/tester.dir
+/home/yukino/workDir/ParallelProgramming/build/CMakeFiles/edit_cache.dir
+/home/yukino/workDir/ParallelProgramming/build/CMakeFiles/rebuild_cache.dir
