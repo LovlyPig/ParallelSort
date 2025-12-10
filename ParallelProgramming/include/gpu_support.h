@@ -7,12 +7,13 @@ void cuda_check(cudaError_t status, const char* action=NULL, const char* file=NU
 
     if (status != cudaSuccess) {
         printf("CUDA Error: %s\n", cudaGetErrorString(status));
-        if (action) {
+        if (action != NULL) {
             printf("While running %s    (file: %s, line: %d)\n", action, file, line);
-            exit(1);
         }
+        exit(1);
     }
 }
 
-#define CUDA_CHECK(status) cuda_check((status), #status, __FILE__, __LINE__)
+#define CUDA_CHECK(status) cuda_check(status, #status, __FILE__, __LINE__)
+
 

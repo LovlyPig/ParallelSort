@@ -10,12 +10,36 @@
 # define COMPILER_ID "NVIDIA"
 # if defined(_MSC_VER)
 #  define SIMULATE_ID "MSVC"
+# elif defined(__clang__)
+#  define SIMULATE_ID "Clang"
+# elif defined(__GNUC__)
+#  define SIMULATE_ID "GNU"
 # endif
 # if defined(__CUDACC_VER_MAJOR__)
 #  define COMPILER_VERSION_MAJOR DEC(__CUDACC_VER_MAJOR__)
 #  define COMPILER_VERSION_MINOR DEC(__CUDACC_VER_MINOR__)
 #  define COMPILER_VERSION_PATCH DEC(__CUDACC_VER_BUILD__)
 # endif
+# if defined(_MSC_VER)
+   /* _MSC_VER = VVRR */
+#  define SIMULATE_VERSION_MAJOR DEC(_MSC_VER / 100)
+#  define SIMULATE_VERSION_MINOR DEC(_MSC_VER % 100)
+# elif defined(__clang__)
+#  define SIMULATE_VERSION_MAJOR DEC(__clang_major__)
+#  define SIMULATE_VERSION_MINOR DEC(__clang_minor__)
+# elif defined(__GNUC__)
+#  define SIMULATE_VERSION_MAJOR DEC(__GNUC__)
+#  define SIMULATE_VERSION_MINOR DEC(__GNUC_MINOR__)
+# endif
+
+#elif defined(__clang__)
+# define COMPILER_ID "Clang"
+# if defined(_MSC_VER)
+#  define SIMULATE_ID "MSVC"
+# endif
+# define COMPILER_VERSION_MAJOR DEC(__clang_major__)
+# define COMPILER_VERSION_MINOR DEC(__clang_minor__)
+# define COMPILER_VERSION_PATCH DEC(__clang_patchlevel__)
 # if defined(_MSC_VER)
    /* _MSC_VER = VVRR */
 #  define SIMULATE_VERSION_MAJOR DEC(_MSC_VER / 100)
@@ -48,6 +72,9 @@ char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
 /* Identify known platforms by name.  */
 #if defined(__linux) || defined(__linux__) || defined(linux)
 # define PLATFORM_ID "Linux"
+
+#elif defined(__MSYS__)
+# define PLATFORM_ID "MSYS"
 
 #elif defined(__CYGWIN__)
 # define PLATFORM_ID "Cygwin"
@@ -131,6 +158,9 @@ char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
 # elif defined(__WINDOWS__)
 #  define PLATFORM_ID "Windows3x"
 
+# elif defined(__VXWORKS__)
+#  define PLATFORM_ID "VxWorks"
+
 # else /* unknown platform */
 #  define PLATFORM_ID
 # endif
@@ -156,6 +186,9 @@ char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
 #if defined(_WIN32) && defined(_MSC_VER)
 # if defined(_M_IA64)
 #  define ARCHITECTURE_ID "IA64"
+
+# elif defined(_M_ARM64EC)
+#  define ARCHITECTURE_ID "ARM64EC"
 
 # elif defined(_M_X64) || defined(_M_AMD64)
 #  define ARCHITECTURE_ID "x64"
@@ -224,6 +257,9 @@ char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
 # elif defined(__ICC8051__)
 #  define ARCHITECTURE_ID "8051"
 
+# elif defined(__ICCSTM8__)
+#  define ARCHITECTURE_ID "STM8"
+
 # else /* unknown architecture */
 #  define ARCHITECTURE_ID ""
 # endif
@@ -247,6 +283,24 @@ char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
 # else /* unknown architecture */
 #  define ARCHITECTURE_ID ""
 # endif
+
+#elif defined(__TI_COMPILER_VERSION__)
+# if defined(__TI_ARM__)
+#  define ARCHITECTURE_ID "ARM"
+
+# elif defined(__MSP430__)
+#  define ARCHITECTURE_ID "MSP430"
+
+# elif defined(__TMS320C28XX__)
+#  define ARCHITECTURE_ID "TMS320C28x"
+
+# elif defined(__TMS320C6X__) || defined(_TMS320C6X)
+#  define ARCHITECTURE_ID "TMS320C6x"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
 #else
 #  define ARCHITECTURE_ID
 #endif
@@ -273,8 +327,12 @@ char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
   ('0' + ((n)>>4  & 0xF)), \
   ('0' + ((n)     & 0xF))
 
+/* Construct a string literal encoding the version number. */
+#ifdef COMPILER_VERSION
+char const* info_version = "INFO" ":" "compiler_version[" COMPILER_VERSION "]";
+
 /* Construct a string literal encoding the version number components. */
-#ifdef COMPILER_VERSION_MAJOR
+#elif defined(COMPILER_VERSION_MAJOR)
 char const info_version[] = {
   'I', 'N', 'F', 'O', ':',
   'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','[',
@@ -298,6 +356,8 @@ char const info_version_internal[] = {
   'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','_',
   'i','n','t','e','r','n','a','l','[',
   COMPILER_VERSION_INTERNAL,']','\0'};
+#elif defined(COMPILER_VERSION_INTERNAL_STR)
+char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";
 #endif
 
 /* Construct a string literal encoding the version number components. */
@@ -327,9 +387,10 @@ char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";
 
 
 
-
-const char* info_language_dialect_default = "INFO" ":" "dialect_default["
-#if __cplusplus > 201703L
+const char* info_language_standard_default = "INFO" ":" "standard_default["
+#if __cplusplus > 202002L
+  "23"
+#elif __cplusplus > 201703L
   "20"
 #elif __cplusplus >= 201703L
   "17"
@@ -338,7 +399,17 @@ const char* info_language_dialect_default = "INFO" ":" "dialect_default["
 #elif __cplusplus >= 201103L
   "11"
 #else
-  "98"
+  "03"
+#endif
+"]";
+
+const char* info_language_extensions_default = "INFO" ":" "extensions_default["
+/* !defined(_MSC_VER) to exclude Clang's MSVC compatibility mode. */
+#if (defined(__clang__) || defined(__GNUC__)) && !defined(__STRICT_ANSI__) && \
+  !defined(_MSC_VER)
+  "ON"
+#else
+  "OFF"
 #endif
 "]";
 
@@ -358,7 +429,8 @@ int main(int argc, char* argv[])
 #ifdef SIMULATE_VERSION_MAJOR
   require += info_simulate_version[argc];
 #endif
-  require += info_language_dialect_default[argc];
+  require += info_language_standard_default[argc];
+  require += info_language_extensions_default[argc];
   (void)argv;
   return require;
 }
