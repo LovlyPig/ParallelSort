@@ -42,12 +42,11 @@ struct GpuLayout {
     }
 
     void malloc_2D(size_t rows, size_t cols) {
-        uint32_t *data;
-        CUDA_CHECK(cudaMalloc((void**)&data, rows * cols * sizeof(uint32_t)));
+        CUDA_CHECK(cudaMalloc((void**)&data_out, rows * cols * sizeof(uint32_t)));
         bucket_data = (uint32_t**)malloc(rows * sizeof(uint32_t*));
         if (bucket_data == NULL) {
             printf("Host memory allocation failed. (file: %s, line: %d)\n", __FILE__, __LINE__);
-            cudaFree(data);
+            cudaFree(data_out);
             exit(1);
         }
 
@@ -71,9 +70,43 @@ struct GpuLayout {
             CUDA_CHECK(cudaMemset(offset, 0, 256*256* sizeof(uint32_t)));
     }
 
+    void clean() {
+        if (data) {
+            CUDA_CHECK(cudaFree(data));
+            data = nullptr;
+        }
+        if (bucket) {
+            CUDA_CHECK(cudaFree(bucket));
+            bucket = nullptr;
+        }
+        if (bucket_row) {
+            CUDA_CHECK(cudaFree(bucket_row));
+            bucket_row = nullptr;
+        }
+        if (bucket_data) {
+            free(bucket_data);
+            bucket_data = nullptr;
+        }
+
+        if (hist) {
+            CUDA_CHECK(cudaFree(hist));
+            hist = nullptr;
+        }
+        if (offset) {
+            CUDA_CHECK(cudaFree(offset));
+            offset = nullptr;
+        }
+        if (data_out) {
+            CUDA_CHECK(cudaFree(data_out));
+            data_out = nullptr;
+        }
+    }
+
 };
 
 void setup_1(std::vector<uint32_t> &host_array, GpuLayout &layout) {
+    layout.clean();
+    
     layout.size = host_array.size();
     CUDA_CHECK(cudaMalloc((void**)&layout.data, layout.size*sizeof(uint32_t)));
     CUDA_CHECK(cudaMemcpy(layout.data, host_array.data(), layout.size*sizeof(uint32_t), cudaMemcpyHostToDevice));
@@ -83,6 +116,8 @@ void setup_1(std::vector<uint32_t> &host_array, GpuLayout &layout) {
 }
 
 void setup_2(std::vector<uint32_t> &host_array, GpuLayout &layout) {
+    layout.clean();
+
     layout.size = host_array.size();
     layout.blocksize = layout.size / 256;
     CUDA_CHECK(cudaMalloc((void**)&layout.data, host_array.size()*sizeof(uint32_t)));
@@ -91,6 +126,8 @@ void setup_2(std::vector<uint32_t> &host_array, GpuLayout &layout) {
 
     CUDA_CHECK(cudaMalloc((void**)&layout.hist, 256*256* sizeof(uint32_t)));
     CUDA_CHECK(cudaMalloc((void**)&layout.offset, 256*256 * sizeof(uint32_t)));
+
+    layout.clear();
 }
 
 class Tester {

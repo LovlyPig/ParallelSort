@@ -4,6 +4,8 @@
 #include <memory>
 
 #include "cpu_support.h"
+#include <thrust/sort.h>
+#include <thrust/device_ptr.h>
 
 void radix_sort_tbb(uint32_t *a, size_t n) {
 
@@ -121,6 +123,7 @@ __global__ void gpu_radix_sort_opt(uint32_t *a_in, uint32_t *a_out, uint32_t *hi
     __syncthreads();
 
     __shared__ uint32_t temp[256];
+    temp[tid] = 0;
 
     #pragma unroll
     for (size_t i = 0; i < 256; i++) 
@@ -174,6 +177,86 @@ void call_gpu_opt(GpuLayout &layout) {
         layout.clear();
     }
 
+    // thrust::device_ptr<uint32_t> d_ptr(layout.data);
+    // thrust::sort(d_ptr, d_ptr + n);
+
+}
+
+__global__ void hist(uint32_t *a, uint32_t *hist, size_t n, size_t shift, size_t blocksize) {
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+    if (tid >= n) return;
+
+    int block_id = tid / (int)blocksize;
+
+    uint32_t index = a[tid] >> shift & 0xff;
+    atomicAdd(&hist[block_id * 256 + index], 1);
+}
+
+__global__ void prefix_sum(uint32_t *hist, uint32_t *offset) {
+    int tid = threadIdx.x;
+    if (tid >= 256) return;
+
+    __shared__ uint32_t temp[256];
+    temp[tid] = 0;
+
+    #pragma unroll
+    for (size_t i = 0; i < 256; i++) 
+        temp[tid] += hist[i * 256 + tid];
+    __syncthreads();
+
+    if (tid == 0) [[unlikely]] {
+        uint32_t pre = 0;
+        #pragma unroll
+        for (size_t i = 0; i < 256; i++) {
+            uint32_t val = temp[i];
+            temp[i] = pre;
+            pre += val;
+        }
+    }
+    __syncthreads();
+
+    #pragma unroll
+    for (size_t i = 0; i < 256; i++) {
+        offset[i * 256 + tid] = temp[tid];
+        temp[tid] += hist[i * 256 + tid];
+    }
+}
+
+__global__ void scatter(uint32_t *a_in, uint32_t *a_out, uint32_t *offset, size_t n, size_t shift, size_t blocksize) {
+    int tid = threadIdx.x;
+    if (tid >= 256) return;
+    size_t start = tid*blocksize, end = min(n, start + blocksize);
+
+    #pragma unroll
+    for (size_t i = start; i < end; i++) {
+        uint32_t *o = &offset[tid*256];
+        uint32_t index = (a_in[i] >> shift) & 0xff;
+        uint32_t write_pos = atomicAdd(&o[index], 1);
+        a_out[write_pos] = a_in[i];
+    }
+}
+
+
+void call_gpu_opt_2(GpuLayout &layout) {
+    size_t n = layout.size;
+
+    for (size_t i = 0; i < 4; i++) {
+        hist<<<n/1024, 1024>>>(layout.data, layout.hist, n, i*8, layout.blocksize);
+        cudaDeviceSynchronize();
+        CUDA_CHECK(cudaGetLastError());
+
+        prefix_sum<<<1,256>>>(layout.hist, layout.offset);
+        cudaDeviceSynchronize();
+        CUDA_CHECK(cudaGetLastError());
+
+        scatter<<<1, 256>>>(layout.data, layout.data_out, layout.offset, n, i*8, layout.blocksize);
+        cudaDeviceSynchronize();
+        CUDA_CHECK(cudaGetLastError());
+
+        layout.swap();
+        layout.clear();
+    }
+
 }
 
 void call_gpu(GpuLayout &layout) {
@@ -184,27 +267,85 @@ void call_gpu(GpuLayout &layout) {
     CUDA_CHECK(cudaGetLastError());
 }
 
+__device__ void swap(uint32_t &a, uint32_t &b) {
+    uint32_t t = a;
+    a = b;
+    b = t;
+}
+
+__global__ void bitonic_sort_kernel(uint32_t *data, size_t n) {
+    int tid = threadIdx.x;
+    int bid = blockIdx.x;
+    int global_tid = tid + bid * blockDim.x;
+
+    if (global_tid >= n) return;
+
+    __shared__ uint32_t sdata[1024]; // assume blockDim.x = 1024
+
+    sdata[tid] = data[global_tid];
+    __syncthreads();
+
+    // Bitonic sort within the block
+    for (int k = 2; k <= blockDim.x; k <<= 1) {
+        for (int j = k >> 1; j > 0; j >>= 1) {
+            int ixj = tid ^ j;
+            if (ixj > tid) {
+                if ((tid & k) == 0) {
+                    if (sdata[tid] > sdata[ixj]) swap(sdata[tid], sdata[ixj]);
+                } else {
+                    if (sdata[tid] < sdata[ixj]) swap(sdata[tid], sdata[ixj]);
+                }
+            }
+            __syncthreads();
+        }
+    }
+
+    data[global_tid] = sdata[tid];
+}
+
+void call_bitonic_sort(GpuLayout &layout) {
+    size_t n = layout.size;
+    dim3 block(1024);
+    dim3 grid((n + 1023) / 1024);
+
+    bitonic_sort_kernel<<<grid, block>>>(layout.data, n);
+    cudaDeviceSynchronize();
+    CUDA_CHECK(cudaGetLastError());
+}
+
 int main(int argc, char* argv[]) {
 
-    size_t n = size_t(1) << 20;
+    size_t n = size_t(1) << 22; 
 
     int count = 1;
     if (argc > 1) count = atoi(argv[1]);
 
     Tester tester(n);
     GpuLayout layout;
-    double speedup_avg1 = 0.0, speedup_avg2 = 0.0;
+    double speedup_avg1 = 0.0, speedup_avg2 = 0.0, speedup_avg3 = 0.0, speedup_avg4 = 0.0, speedup_avg5 = 0.0, speedup_avg6 = 0.0;
 
     for (int i = 0; i < count; i++) {
         tester.init();
         speedup_avg1 += tester.cpu_bench(radix_sort_tbb, "radix_sort_tbb");
-        speedup_avg2 += tester.gpu_bench(layout, setup_2, call_gpu_opt, "gpu_radix_sort_opt");
+        //speedup_avg2 += tester.gpu_bench(layout, setup_1, call_gpu, "gpu_radix_sort");
+        speedup_avg3 += tester.gpu_bench(layout, setup_2, call_gpu_opt, "gpu_radix_sort_opt");
+        speedup_avg4 += tester.gpu_bench(layout, setup_2, call_gpu_opt_2, "gpu_radix_sort_opt_2");
+        speedup_avg5 += tester.gpu_bench(layout, setup_1, call_bitonic_sort, "bitonic_sort");
     }
     speedup_avg1 /= count;
-    speedup_avg2 /= count;
+    //speedup_avg2 /= count;
+    speedup_avg3 /= count;
+    speedup_avg4 /= count;
+    speedup_avg5 /= count;
+    speedup_avg6 /= count;
 
     printf("radix_sort_tbb average speedup over %d runs: %.3fx\n", count, speedup_avg1);
-    printf("gpu_radix_sort average speedup over %d runs: %.3fx\n", count, speedup_avg2);
+    //printf("gpu_radix_sort average speedup over %d runs: %.3fx\n", count, speedup_avg2);
+    printf("gpu_radix_sort_opt average speedup over %d runs: %.3fx\n", count, speedup_avg3);
+    printf("gpu_radix_sort_opt_2 average speedup over %d runs: %.3fx\n", count, speedup_avg4);
+    printf("bitonic_sort average speedup over %d runs: %.3fx\n", count, speedup_avg5);
 
     return 0;
 }   
+
+
