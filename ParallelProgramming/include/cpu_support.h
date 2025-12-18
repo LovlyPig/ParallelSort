@@ -24,12 +24,15 @@ struct GpuLayout {
     uint32_t *bucket_row;
     size_t size;
 
-    uint32_t *hist, *offset, *data_out;
+    uint32_t *hist, *offset, *base, *data_out;
+    uint32_t *partials;
+    size_t hist_size, offset_size, partials_size;
+    size_t partials_blocks;
 
-    size_t blocksize;
+    size_t blocksize, blocknum;
 
-    GpuLayout() : data(nullptr), bucket(nullptr), bucket_row(nullptr), bucket_data(nullptr), size(0), 
-                hist(nullptr), offset(nullptr), data_out(nullptr), blocksize(0) {}
+    GpuLayout() : data(nullptr), bucket(nullptr), bucket_row(nullptr), bucket_data(nullptr), size(0), base(nullptr), 
+                hist(nullptr), offset(nullptr), data_out(nullptr), partials(nullptr), blocksize(0), blocknum(0), hist_size(0), offset_size(0), partials_size(0), partials_blocks(0) {}
     ~GpuLayout() {
         if (data) cudaFree(data);
         if (bucket) cudaFree(bucket);
@@ -38,6 +41,8 @@ struct GpuLayout {
 
         if (hist) cudaFree(hist);
         if (offset) cudaFree(offset);
+        if (partials) cudaFree(partials);
+        if (base) cudaFree(base);
         if (data_out) cudaFree(data_out);
     }
 
@@ -64,10 +69,14 @@ struct GpuLayout {
 
     void clear() {
         if (hist)
-            CUDA_CHECK(cudaMemset(hist, 0, 256*256* sizeof(uint32_t)));
+            CUDA_CHECK(cudaMemset(hist, 0, hist_size * sizeof(uint32_t)));
 
         if (offset)
-            CUDA_CHECK(cudaMemset(offset, 0, 256*256* sizeof(uint32_t)));
+            CUDA_CHECK(cudaMemset(offset, 0, offset_size * sizeof(uint32_t)));
+        if (base)
+            CUDA_CHECK(cudaMemset(base, 0, 16 * sizeof(uint32_t)));
+        if (partials && partials_size > 0)
+            CUDA_CHECK(cudaMemset(partials, 0, partials_size * sizeof(uint32_t)));
     }
 
     void clean() {
@@ -95,6 +104,14 @@ struct GpuLayout {
         if (offset) {
             CUDA_CHECK(cudaFree(offset));
             offset = nullptr;
+        }
+        if (partials) {
+            CUDA_CHECK(cudaFree(partials));
+            partials = nullptr;
+        }
+        if (base) {
+            CUDA_CHECK(cudaFree(base));
+            base = nullptr;
         }
         if (data_out) {
             CUDA_CHECK(cudaFree(data_out));
@@ -124,15 +141,40 @@ void setup_2(std::vector<uint32_t> &host_array, GpuLayout &layout) {
     CUDA_CHECK(cudaMalloc((void**)&layout.data_out, host_array.size()*sizeof(uint32_t)));
     CUDA_CHECK(cudaMemcpy(layout.data, host_array.data(), host_array.size()*sizeof(uint32_t), cudaMemcpyHostToDevice));
 
+    layout.hist_size = 256*256;
+    layout.offset_size = 256*256;
     CUDA_CHECK(cudaMalloc((void**)&layout.hist, 256*256* sizeof(uint32_t)));
     CUDA_CHECK(cudaMalloc((void**)&layout.offset, 256*256 * sizeof(uint32_t)));
 
     layout.clear();
 }
 
+// maxThreadsPerBlock = 1024
+void setup_1024(std::vector<uint32_t> &host_array, GpuLayout &layout) {
+    layout.clean();
+        
+    layout.size = host_array.size();
+    CUDA_CHECK(cudaMalloc((void**)&layout.data, layout.size*sizeof(uint32_t)));
+    CUDA_CHECK(cudaMemcpy(layout.data, host_array.data(), layout.size*sizeof(uint32_t), cudaMemcpyHostToDevice));
+    CUDA_CHECK(cudaMalloc((void**)&layout.data_out, layout.size*sizeof(uint32_t)));
+        
+    layout.blocknum = layout.size / 1024;
+    layout.blocksize = 1024;
+    layout.hist_size = 16*layout.blocknum;
+    layout.offset_size = 16*layout.blocknum;
+    CUDA_CHECK(cudaMalloc((void**)&layout.hist, layout.hist_size* sizeof(uint32_t)));
+    CUDA_CHECK(cudaMalloc((void**)&layout.offset, layout.offset_size * sizeof(uint32_t)));
+    CUDA_CHECK(cudaMalloc((void**)&layout.base, 16 * sizeof(uint32_t)));
+
+    // partials: number of reduction blocks (choose up to 128 or blocknum)
+    layout.partials_blocks = std::min(layout.blocknum, (size_t)128);
+    layout.partials_size = 16 * layout.partials_blocks;
+    CUDA_CHECK(cudaMalloc((void**)&layout.partials, layout.partials_size * sizeof(uint32_t)));
+    layout.clear();
+}
 class Tester {
 private:
-    std::vector<uint32_t> data1, data2;
+    std::vector<uint32_t> data1;
 
     double get_time_in_seconds() {
         struct timeval tv;
@@ -249,5 +291,6 @@ public:
 
     size_t n;
     double bench_cpu_elapsed;
+    std::vector<uint32_t> data2;
 };
 

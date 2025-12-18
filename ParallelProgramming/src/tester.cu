@@ -4,8 +4,8 @@
 #include <memory>
 
 #include "cpu_support.h"
-#include <thrust/sort.h>
 #include <thrust/device_ptr.h>
+#include <thrust/sort.h>
 
 void radix_sort_tbb(uint32_t *a, size_t n) {
 
@@ -15,16 +15,19 @@ void radix_sort_tbb(uint32_t *a, size_t n) {
     uint32_t *current_in = a;
     uint32_t *current_out = temp.get();
 
+    // 将数组划分为多个块以进行并行处理
+    size_t concurrency = tbb::this_task_arena::max_concurrency();
+    size_t num_blocks = std::min(n, std::max<size_t>(1, concurrency * 4));
+    size_t block_size = (n + num_blocks - 1) / num_blocks;
+    printf("num blocks %zu\t block size %zu\n", num_blocks, block_size);
+
+    std::vector<uint32_t> hist(num_blocks * buckets, 0);
+    std::vector<uint32_t> base(buckets, 0);
+    std::vector<uint32_t> offsets(num_blocks * buckets, 0);
     for (size_t i = 0; i < num; i++) {
         const size_t shift = i * 8;
 
-        // 将数组划分为多个块以进行并行处理
-        size_t concurrency = tbb::this_task_arena::max_concurrency();
-        size_t num_blocks = std::min(n, std::max<size_t>(1, concurrency * 4));
-        size_t block_size = (n + num_blocks - 1) / num_blocks;
-
-        std::vector<uint32_t> hist((size_t)num_blocks * buckets, 0);
-
+        std::fill(hist.begin(), hist.end(), 0);
         // 计算每个块中的数据分配到哪些桶
         tbb::parallel_for((size_t)0, num_blocks, [&](size_t bi) {
             size_t start = bi * block_size;
@@ -38,7 +41,7 @@ void radix_sort_tbb(uint32_t *a, size_t n) {
 
         // 计算每个桶的前缀和获得每个桶的起始位置 
         // 100 runs 3.903x -> 3.957x 相比非并行快一点点
-        std::vector<uint32_t> base(buckets, 0);
+        std::fill(base.begin(), base.end(), 0);
         tbb::parallel_for((size_t)0, buckets, [&](size_t bi) {
             uint32_t sum = 0;
             for (size_t i = 0; i < num_blocks; i++) {
@@ -54,7 +57,7 @@ void radix_sort_tbb(uint32_t *a, size_t n) {
         }
 
         // 计算每个块的桶起始偏移
-        std::vector<uint32_t> offsets((size_t)num_blocks * buckets);
+        std::fill(offsets.begin(), offsets.end(), 0);
         tbb::parallel_for((size_t)0, buckets, [&](size_t bi) {
             uint32_t off = base[bi];
             for (size_t i = 0; i < num_blocks; i++) {
@@ -177,61 +180,86 @@ void call_gpu_opt(GpuLayout &layout) {
         layout.clear();
     }
 
-    // thrust::device_ptr<uint32_t> d_ptr(layout.data);
-    // thrust::sort(d_ptr, d_ptr + n);
-
 }
 
-__global__ void hist(uint32_t *a, uint32_t *hist, size_t n, size_t shift, size_t blocksize) {
+__global__ void hist(uint32_t *a, uint32_t *hist, size_t n, size_t shift) {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
     if (tid >= n) return;
 
-    int block_id = tid / (int)blocksize;
-
-    uint32_t index = a[tid] >> shift & 0xff;
-    atomicAdd(&hist[block_id * 256 + index], 1);
+    uint32_t index = a[tid] >> shift & 0xf;
+    atomicAdd(&hist[blockIdx.x * 16 + index], 1);
 }
 
-__global__ void prefix_sum(uint32_t *hist, uint32_t *offset) {
-    int tid = threadIdx.x;
-    if (tid >= 256) return;
+__global__ void prefix_sum(uint32_t *hist, uint32_t *base, size_t blocknum) {
+    // int tid = threadIdx.x;
 
-    __shared__ uint32_t temp[256];
-    temp[tid] = 0;
+    // #pragma unroll
+    // for (size_t i = 0; i < blocknum; i++) 
+    //     base[tid] += hist[i * 16 + tid];
+    // __syncthreads();
 
+    // if (tid == 0) [[unlikely]] {
+    //     uint32_t pre = 0;
+    //     #pragma unroll
+    //     for (size_t i = 0; i < 16; i++) {
+    //         uint32_t val = base[i];
+    //         base[i] = pre;
+    //         pre += val;
+    //     }
+    // }
+
+    int tid = threadIdx.x; 
+    int nthreads = blockDim.x;
+    if (tid >= nthreads) return;
+
+    uint32_t local[16];
     #pragma unroll
-    for (size_t i = 0; i < 256; i++) 
-        temp[tid] += hist[i * 256 + tid];
-    __syncthreads();
+    for (int k = 0; k < 16; ++k) local[k] = 0;
 
-    if (tid == 0) [[unlikely]] {
-        uint32_t pre = 0;
+    // Each thread processes a strided subset of blocks
+    for (size_t b = tid; b < blocknum; b += nthreads) {
+        size_t base_idx = b * 16;
         #pragma unroll
-        for (size_t i = 0; i < 256; i++) {
-            uint32_t val = temp[i];
-            temp[i] = pre;
-            pre += val;
+        for (int k = 0; k < 16; ++k) {
+            local[k] += hist[base_idx + k];
         }
     }
-    __syncthreads();
 
     #pragma unroll
-    for (size_t i = 0; i < 256; i++) {
-        offset[i * 256 + tid] = temp[tid];
-        temp[tid] += hist[i * 256 + tid];
+    for (int k = 0; k < 16; ++k) {
+        atomicAdd(&base[k], local[k]);
+    }
+
+    __syncthreads();
+
+    if (tid == 0) {
+        uint32_t pre = 0;
+        for (int k = 0; k < 16; ++k) {
+            uint32_t v = base[k];
+            base[k] = pre;
+            pre += v;
+        }
     }
 }
 
-__global__ void scatter(uint32_t *a_in, uint32_t *a_out, uint32_t *offset, size_t n, size_t shift, size_t blocksize) {
+__global__ void off(uint32_t *hist, uint32_t *base, uint32_t *offset, size_t blocknum) {
     int tid = threadIdx.x;
-    if (tid >= 256) return;
-    size_t start = tid*blocksize, end = min(n, start + blocksize);
 
     #pragma unroll
+    for (size_t i = 0; i < blocknum; i++) {
+        offset[i * 16 + tid] = base[tid];
+        base[tid] += hist[i * 16 + tid];
+    }
+}
+
+__global__ void scatter(uint32_t *a_in, uint32_t *a_out, uint32_t *offset, size_t n, size_t shift) {
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+
+    size_t start = tid*1024, end = min(n, start + 1024);
+    uint32_t *o = &offset[tid * 16];
     for (size_t i = start; i < end; i++) {
-        uint32_t *o = &offset[tid*256];
-        uint32_t index = (a_in[i] >> shift) & 0xff;
-        uint32_t write_pos = atomicAdd(&o[index], 1);
+        uint32_t index = (a_in[i] >> shift) & 0xf;
+        uint32_t write_pos = o[index]++;
         a_out[write_pos] = a_in[i];
     }
 }
@@ -240,16 +268,20 @@ __global__ void scatter(uint32_t *a_in, uint32_t *a_out, uint32_t *offset, size_
 void call_gpu_opt_2(GpuLayout &layout) {
     size_t n = layout.size;
 
-    for (size_t i = 0; i < 4; i++) {
-        hist<<<n/1024, 1024>>>(layout.data, layout.hist, n, i*8, layout.blocksize);
+    for (size_t i = 0; i < 8; i++) {
+        hist<<<n/1024, 1024>>>(layout.data, layout.hist, n, i*4);
         cudaDeviceSynchronize();
         CUDA_CHECK(cudaGetLastError());
 
-        prefix_sum<<<1,256>>>(layout.hist, layout.offset);
+        prefix_sum<<<1, 1024>>>(layout.hist, layout.base, layout.blocknum);
         cudaDeviceSynchronize();
         CUDA_CHECK(cudaGetLastError());
 
-        scatter<<<1, 256>>>(layout.data, layout.data_out, layout.offset, n, i*8, layout.blocksize);
+        off<<<1,16>>>(layout.hist, layout.base, layout.offset, layout.blocknum);
+        cudaDeviceSynchronize();
+        CUDA_CHECK(cudaGetLastError());
+
+        scatter<<<layout.blocknum/512, 512>>>(layout.data, layout.data_out, layout.offset, n, i*4);
         cudaDeviceSynchronize();
         CUDA_CHECK(cudaGetLastError());
 
@@ -313,37 +345,42 @@ void call_bitonic_sort(GpuLayout &layout) {
     CUDA_CHECK(cudaGetLastError());
 }
 
+void thrust_sort(GpuLayout &layout) {
+    size_t n = layout.size;
+    thrust::device_ptr<uint32_t> d_ptr(layout.data);
+    thrust::sort(d_ptr, d_ptr + n);
+}
+
 int main(int argc, char* argv[]) {
 
-    size_t n = size_t(1) << 22; 
+    size_t n = size_t(1) << 24; 
 
     int count = 1;
     if (argc > 1) count = atoi(argv[1]);
 
     Tester tester(n);
     GpuLayout layout;
-    double speedup_avg1 = 0.0, speedup_avg2 = 0.0, speedup_avg3 = 0.0, speedup_avg4 = 0.0, speedup_avg5 = 0.0, speedup_avg6 = 0.0;
+    double speedup_avg1 = 0.0, speedup_avg2 = 0.0, speedup_avg3 = 0.0, speedup_avg4 = 0.0, speedup_avg5 = 0.0;
 
     for (int i = 0; i < count; i++) {
         tester.init();
         speedup_avg1 += tester.cpu_bench(radix_sort_tbb, "radix_sort_tbb");
-        //speedup_avg2 += tester.gpu_bench(layout, setup_1, call_gpu, "gpu_radix_sort");
-        speedup_avg3 += tester.gpu_bench(layout, setup_2, call_gpu_opt, "gpu_radix_sort_opt");
-        speedup_avg4 += tester.gpu_bench(layout, setup_2, call_gpu_opt_2, "gpu_radix_sort_opt_2");
-        speedup_avg5 += tester.gpu_bench(layout, setup_1, call_bitonic_sort, "bitonic_sort");
+        speedup_avg2 += tester.gpu_bench(layout, setup_2, call_gpu_opt, "gpu_radix_sort_opt");
+        speedup_avg3 += tester.gpu_bench(layout, setup_1024, call_gpu_opt_2, "gpu_radix_sort_opt_2");
+        speedup_avg4 += tester.gpu_bench(layout, setup_1, call_bitonic_sort, "bitonic_sort");
+        speedup_avg5 += tester.gpu_bench(layout, setup_1, thrust_sort, "thrust_sort");
     }
     speedup_avg1 /= count;
-    //speedup_avg2 /= count;
+    speedup_avg2 /= count;
     speedup_avg3 /= count;
     speedup_avg4 /= count;
     speedup_avg5 /= count;
-    speedup_avg6 /= count;
 
     printf("radix_sort_tbb average speedup over %d runs: %.3fx\n", count, speedup_avg1);
-    //printf("gpu_radix_sort average speedup over %d runs: %.3fx\n", count, speedup_avg2);
-    printf("gpu_radix_sort_opt average speedup over %d runs: %.3fx\n", count, speedup_avg3);
-    printf("gpu_radix_sort_opt_2 average speedup over %d runs: %.3fx\n", count, speedup_avg4);
-    printf("bitonic_sort average speedup over %d runs: %.3fx\n", count, speedup_avg5);
+    printf("gpu_radix_sort_opt average speedup over %d runs: %.3fx\n", count, speedup_avg2);
+    printf("gpu_radix_sort_opt_2 average speedup over %d runs: %.3fx\n", count, speedup_avg3);
+    printf("bitonic_sort average speedup over %d runs: %.3fx\n", count, speedup_avg4);
+    printf("thrust_sort average speedup over %d runs: %.3fx\n", count, speedup_avg5);
 
     return 0;
 }   

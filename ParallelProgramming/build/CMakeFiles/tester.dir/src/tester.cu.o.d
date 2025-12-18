@@ -538,7 +538,7 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/include/oneapi/tbb/queuing_rw_mutex.h \
     /usr/include/oneapi/tbb/task_scheduler_observer.h \
     /usr/include/oneapi/tbb/tick_count.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/sort.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/device_ptr.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/config.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/config/config.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/__cccl_config \
@@ -589,10 +589,160 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/config/namespace.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/version.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/version \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/execution_policy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/sort.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/memory.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/pointer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/reference_forward_declaration.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/use_default.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/type_traits \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__algorithm/iter_swap.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/declval.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/swap.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_move_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_lvalue_reference.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_referenceable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_same.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_rvalue_reference.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_void.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_cvref.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_reference.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_move_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/conjunction.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/conditional.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/disjunction.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_base_of.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_class.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_union.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_destructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_function.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_const.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_reference.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_all_extents.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/negation.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_move_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_scalar.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_arithmetic.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_floating_point.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_enum.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_array.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_member_pointer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_member_function_pointer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_pointer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_null_pointer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_move_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_swappable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/nat.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/move.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_copy_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_const.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/identity.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/reference_wrapper.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/invoke.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/apply_cv.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_volatile.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/decay.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_pointer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_extent.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_core_convertible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_member_object_pointer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_reference_wrapper.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/forward.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/weak_result_type.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/binary_function.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/unary_function.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__memory/addressof.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__fwd/hash.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__fwd/pair.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_cv.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_volatile.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/aligned_storage.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/type_list.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/aligned_union.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/alignment_of.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/can_extract_key.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_const_ref.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/common_reference.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/common_type.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/copy_cvref.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/copy_cv.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_extended_floating_point.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/void_t.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_convertible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/dependent_type.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/extent.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/has_unique_object_representation.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/has_virtual_destructor.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_abstract.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_aggregate.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_allocator.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_bounded_array.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_callable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_char_like_type.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_standard_layout.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivial.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_copyable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_default_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_compound.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_fundamental.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_constant_evaluated.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_copy_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_default_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_empty.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_final.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_implicitly_default_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_literal_type.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_convertible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/lazy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_copy_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_copy_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_default_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_destructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_object.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_pod.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_copy_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_copy_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_destructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_polymorphic.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_primary_template.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_valid_expansion.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_scoped_enum.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/underlying_type.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_signed.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_signed_integer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_move_assignable.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_move_constructible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_unbounded_array.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_unsigned.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_unsigned_integer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/make_32_64_or_128_bit.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/make_unsigned.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/cstdint \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/detail/libcxx/include/cstdint \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__cuda/cstdint_prelude.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/climits \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/detail/libcxx/include/climits \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__cuda/climits_prelude.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/make_const_lvalue_ref.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/make_signed.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/maybe_const.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/promote.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/rank.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_pointer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/result_of.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/type_identity.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/convert_to_integral.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/pointer_traits.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/has_nested_type.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/is_metafunction_defined.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/iterator_traits.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/any_system_tag.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/execution_policy.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/device_system_tag.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/execution_policy.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/config.h \
@@ -606,59 +756,7 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/util_namespace.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/version.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/utility \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/binary_function.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/hash.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/invoke.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_lvalue_reference.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_referenceable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_same.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/apply_cv.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_const.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_volatile.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_reference.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/conditional.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/decay.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_pointer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_void.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_cvref.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_array.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_function.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_reference.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_extent.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_base_of.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_class.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_union.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/declval.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_core_convertible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_member_function_pointer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_member_object_pointer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_reference_wrapper.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/nat.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/forward.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/unary_function.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__fwd/hash.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_copy_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_const.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/conjunction.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/disjunction.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_destructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_all_extents.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/negation.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_default_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_enum.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_floating_point.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_member_pointer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_pointer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_move_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_rvalue_reference.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/underlying_type.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/move.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_move_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_scalar.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_arithmetic.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_null_pointer.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/pair.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/unwrap_ref.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__fwd/get.h \
@@ -667,38 +765,17 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/assignable.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/common_reference_with.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/convertible_to.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_convertible.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/same_as.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/common_reference.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/common_type.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/copy_cvref.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/copy_cv.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_cv.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/add_volatile.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_extended_floating_point.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/void_t.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/make_const_lvalue_ref.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/constructible.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/destructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_destructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_object.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/movable.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/swappable.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/class_or_enum.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/extent.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_move_assignable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_assignable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_assignable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/type_identity.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/exchange.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__fwd/array.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__fwd/pair.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__fwd/subrange.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__iterator/concepts.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/arithmetic.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_signed.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_signed_integer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_unsigned_integer.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/derived_from.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/equality_comparable.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/boolean_testable.h \
@@ -709,15 +786,10 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/relation.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__concepts/totally_ordered.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__iterator/incrementable_traits.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_primary_template.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_valid_expansion.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/make_signed.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/type_list.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__iterator/iter_move.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__iterator/iterator_traits.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__iterator/readable_traits.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__memory/pointer_traits.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__memory/addressof.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__fwd/tuple.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__tuple_dir/tuple_element.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__tuple_dir/tuple_indices.h \
@@ -728,83 +800,18 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__tuple_dir/apply_cv.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__tuple_dir/tuple_size.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__tuple_dir/tuple_like_ext.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_copy_assignable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_move_assignable.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__tuple_dir/structured_bindings.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_implicitly_default_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_copy_assignable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_copy_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_default_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_swappable.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/piecewise_construct.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/swap.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/cstdint \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/detail/libcxx/include/cstdint \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__cuda/cstdint_prelude.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/climits \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/detail/libcxx/include/climits \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__cuda/climits_prelude.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/detail/libcxx/include/cstring \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/detail/libcxx/include/string.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/reference_wrapper.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/weak_result_type.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__memory/construct_at.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__iterator/access.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__memory/voidify.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_constant_evaluated.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_destructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_move_assignable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_assignable.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/as_const.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/auto_cast.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/cmp.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/make_unsigned.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_unsigned.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/limits \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/detail/libcxx/include/limits \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/type_traits \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__algorithm/iter_swap.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__functional/identity.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/aligned_storage.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/aligned_union.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/alignment_of.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/can_extract_key.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_const_ref.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/dependent_type.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/has_unique_object_representation.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/has_virtual_destructor.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_abstract.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_aggregate.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_allocator.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_bounded_array.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_callable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_char_like_type.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_standard_layout.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivial.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_copyable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_default_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_compound.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_fundamental.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_empty.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_final.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_literal_type.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_nothrow_convertible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/lazy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_pod.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_copy_assignable.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_copy_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_polymorphic.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_scoped_enum.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_trivially_move_constructible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/is_unbounded_array.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/make_32_64_or_128_bit.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/maybe_const.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/promote.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/rank.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/remove_pointer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__type_traits/result_of.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/convert_to_integral.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/forward_like.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/in_place.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cuda/std/__utility/priority_tag.h \
@@ -883,7 +890,6 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_deduction.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/preprocessor.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/type_traits/remove_cvref.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/dependencies_aware_execution_policy.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/host_system_tag.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/execution_policy.h \
@@ -895,56 +901,14 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/iterator_categories.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/iterator_category_with_system_and_traversal.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/universal_categories.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/sort.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/sort.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/sort.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/reverse.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/reverse.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/reverse.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/reverse.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/reverse.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/reverse.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/advance.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/advance.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/has_nested_type.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/pointer_traits.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/is_metafunction_defined.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/advance.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/advance.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/distance.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/distance.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/distance.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/distance.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/reverse_iterator.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/reverse_iterator_base.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/iterator_adaptor.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/use_default.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/iterator_adaptor_base.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/iterator_facade.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/distance_from_result.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/iterator_facade_category.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/is_iterator_category.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/reverse_iterator.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/copy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/cdp_dispatch.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/cross_system.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/internal/copy_cross_system.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/raw_pointer_cast.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/temporary_array.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/no_throw_allocator.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/temporary_allocator.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/allocator_traits.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/memory_wrapper.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/has_member_function.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/allocator_traits.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/integer_traits.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/is_call_possible.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/tagged_allocator.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/tagged_allocator.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/memory.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/pointer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/reference_forward_declaration.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/pointer.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/raw_pointer_cast.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/raw_reference_cast.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/tuple_transform.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/tuple_meta_transform.h \
@@ -958,25 +922,43 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/assign_value.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/assign_value.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/assign_value.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/get_value.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/get_value.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/get_value.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/get_value.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/iter_swap.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/iter_swap.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/swap.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/iter_swap.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/iter_swap.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/swap.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/swap.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/swap_ranges.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/swap_ranges.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/swap_ranges.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/swap_ranges.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/swap_ranges.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/par_to_seq.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/copy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/advance.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/advance.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/advance.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/advance.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/cdp_dispatch.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/cross_system.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/internal/copy_cross_system.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/temporary_array.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/no_throw_allocator.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/temporary_allocator.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/allocator_traits.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/memory_wrapper.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/has_member_function.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/allocator_traits.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/integer_traits.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/is_call_possible.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/tagged_allocator.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/tagged_allocator.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/pair.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/temporary_allocator.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/temporary_buffer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/execute_with_allocator.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/integer_math.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/temporary_buffer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/temporary_buffer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/temporary_buffer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/temporary_buffer.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/tag.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/temporary_buffer.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/malloc_and_free.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/malloc_and_free_fwd.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/malloc_and_free.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/malloc_and_free.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/malloc_and_free.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/malloc_and_free.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/seq.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/par.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/util.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/detail/device_synchronize.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/util_device.cuh \
@@ -1005,7 +987,34 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system_error.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/system_error.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/system_error.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/parallel_for.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/bad_alloc.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/memory.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/memory.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/terminate.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/contiguous_storage.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/normal_iterator.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/contiguous_storage.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/copy_construct_range.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/copy_construct_range.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/copy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/copy.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/copy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/copy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/copy.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/general_copy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/trivial_copy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/copy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/copy.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/copy.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/internal_functional.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/tuple_of_iterator_references.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/for_each.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/for_each.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/for_each.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/for_each.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/function.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/for_each.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/for_each.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/device/device_for.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/detail/nvtx.cuh \
     /usr/local/cuda-12.8/targets/x86_64-linux/include/cub/detail/nvtx3.hpp \
@@ -1048,6 +1057,10 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/thread/thread_load.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/util_math.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/core/triple_chevron_launch.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/distance.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/distance.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/distance.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/distance.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/core/util.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/block/block_load.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/block/block_exchange.cuh \
@@ -1067,69 +1080,23 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/warp/specializations/warp_scan_smem.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/block/specializations/block_scan_warp_scans.cuh \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/cub/block/block_store.cuh \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/transform.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/parallel_for.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/for_each.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/select_system.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/minimum_system.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/type_traits/minimum_type.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/select_system.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/select_system_exists.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/swap_ranges.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/tag.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/swap_ranges.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/internal_functional.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/tuple_of_iterator_references.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/pair.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/for_each.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/for_each.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/for_each.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/for_each.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/function.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/for_each.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/for_each.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/for_each.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/zip_iterator.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/zip_iterator_base.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/minimum_category.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/zip_iterator.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/memory.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/memory.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/malloc_and_free_fwd.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/malloc_and_free.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/malloc_and_free.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/malloc_and_free.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/malloc_and_free.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/malloc_and_free.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/bad_alloc.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/temporary_buffer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/execute_with_allocator.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/integer_math.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/temporary_buffer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/temporary_buffer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/temporary_buffer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/temporary_buffer.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/temporary_buffer.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/temporary_allocator.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/terminate.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/contiguous_storage.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/normal_iterator.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/contiguous_storage.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/copy_construct_range.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/copy_construct_range.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/copy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/copy.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/copy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/copy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/copy.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/general_copy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/trivial_copy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/copy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/copy.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/copy.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/transform.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/transform.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/transform.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/transform.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/transform.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/transform.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/transform.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/transform.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/destroy_range.h \
@@ -1140,6 +1107,7 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/uninitialized_fill.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/uninitialized_fill.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/uninitialized_fill.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/uninitialized_fill.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/uninitialized_fill.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/uninitialized_fill.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/uninitialized_fill.inl \
@@ -1158,10 +1126,45 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/generate.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/value_initialize_range.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/allocator/value_initialize_range.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/swap.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/tagged_iterator.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/temporary_array.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/uninitialized_copy.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/internal/copy_device_to_device.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/par_to_seq.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/par.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/get_value.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/get_value.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/get_value.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/get_value.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/iter_swap.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/iter_swap.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/iter_swap.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/iter_swap.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/swap.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/swap.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/swap_ranges.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/swap_ranges.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/swap_ranges.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cpp/detail/swap_ranges.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/swap_ranges.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/swap_ranges.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/swap_ranges.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/device_ptr.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/device_reference.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/sort.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/sort.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/sort.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/sort.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/sort.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/reverse.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/reverse.inl \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/reverse.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/reverse.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/reverse.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/reverse_iterator.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/reverse_iterator_base.h \
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/iterator/detail/reverse_iterator.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/reverse.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/reverse.inl \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/sequential/stable_merge_sort.h \
@@ -1400,7 +1403,4 @@ CMakeFiles/tester.dir/src/tester.cu.o : /home/yukino/workDir/ParallelProgramming
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/adl/find.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/find.h \
     /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/find.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/find.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/device_ptr.h \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/detail/device_ptr.inl \
-    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/device_reference.h
+    /usr/local/cuda-12.8/bin/../targets/x86_64-linux/include/thrust/system/detail/generic/find.inl
