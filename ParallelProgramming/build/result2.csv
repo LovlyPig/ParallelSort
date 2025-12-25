@@ -1,0 +1,15 @@
+algorithm,size,avg_seconds,avg_speedup
+radix_sort_tbb,1048576,0.00147,3.945
+gpu_radix_sort_opt_2,1048576,0.01228,0.468
+bitonic_sort,1048576,0.00052,11.115
+thrust_sort,1048576,0.00027,21.283
+algorithm,size,avg_seconds,avg_speedup
+radix_sort_tbb,4194304,0.00407,6.422
+gpu_radix_sort_opt_2,4194304,0.01670,1.545
+bitonic_sort,4194304,0.00203,12.693
+thrust_sort,4194304,0.00062,41.374
+algorithm,size,avg_seconds,avg_speedup
+radix_sort_tbb,16777216,0.03390,6.032
+gpu_radix_sort_opt_2,16777216,0.05333,3.834
+bitonic_sort,16777216,0.00590,34.659
+thrust_sort,16777216,0.00289,70.983

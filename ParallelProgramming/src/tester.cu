@@ -2,6 +2,7 @@
 #include <string>
 #include <iomanip>
 #include <memory>
+#include <fstream>
 
 #include "cpu_support.h"
 #include <thrust/device_ptr.h>
@@ -19,7 +20,7 @@ void radix_sort_tbb(uint32_t *a, size_t n) {
     size_t concurrency = tbb::this_task_arena::max_concurrency();
     size_t num_blocks = std::min(n, std::max<size_t>(1, concurrency * 4));
     size_t block_size = (n + num_blocks - 1) / num_blocks;
-    printf("num blocks %zu\t block size %zu\n", num_blocks, block_size);
+    //printf("num blocks %zu\t block size %zu\n", num_blocks, block_size);
 
     std::vector<uint32_t> hist(num_blocks * buckets, 0);
     std::vector<uint32_t> base(buckets, 0);
@@ -184,60 +185,62 @@ void call_gpu_opt(GpuLayout &layout) {
 
 __global__ void hist(uint32_t *a, uint32_t *hist, size_t n, size_t shift) {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
-    if (tid >= n) return;
+    __shared__ uint32_t local_hist[16];
+    if (threadIdx.x < 16) [[unlikely]]{
+        local_hist[threadIdx.x] = 0;
+    }
+    __syncthreads();
 
     uint32_t index = a[tid] >> shift & 0xf;
-    atomicAdd(&hist[blockIdx.x * 16 + index], 1);
+    atomicAdd(&local_hist[index], 1);
+    __syncthreads();
+    if (threadIdx.x < 16) [[unlikely]] {
+        atomicAdd(&hist[blockIdx.x * 16 + threadIdx.x], local_hist[threadIdx.x]);
+    }
 }
 
+// 使用共享内存比使用本地内存快一点 100 runs 3.811x -> 3.957x
 __global__ void prefix_sum(uint32_t *hist, uint32_t *base, size_t blocknum) {
-    // int tid = threadIdx.x;
-
-    // #pragma unroll
-    // for (size_t i = 0; i < blocknum; i++) 
-    //     base[tid] += hist[i * 16 + tid];
-    // __syncthreads();
-
-    // if (tid == 0) [[unlikely]] {
-    //     uint32_t pre = 0;
-    //     #pragma unroll
-    //     for (size_t i = 0; i < 16; i++) {
-    //         uint32_t val = base[i];
-    //         base[i] = pre;
-    //         pre += val;
-    //     }
-    // }
 
     int tid = threadIdx.x; 
     int nthreads = blockDim.x;
     if (tid >= nthreads) return;
 
-    uint32_t local[16];
-    #pragma unroll
-    for (int k = 0; k < 16; ++k) local[k] = 0;
+    __shared__ uint32_t local[16];
+    if (tid < 16) [[unlikely]] {
+        local[tid] = 0;
+    }
+    __syncthreads();
 
     // Each thread processes a strided subset of blocks
     for (size_t b = tid; b < blocknum; b += nthreads) {
         size_t base_idx = b * 16;
         #pragma unroll
         for (int k = 0; k < 16; ++k) {
-            local[k] += hist[base_idx + k];
+            atomicAdd(&local[k], hist[base_idx + k]);
         }
     }
 
+    /*
     #pragma unroll
     for (int k = 0; k < 16; ++k) {
         atomicAdd(&base[k], local[k]);
-    }
+    } */
 
     __syncthreads();
 
     if (tid == 0) {
         uint32_t pre = 0;
         for (int k = 0; k < 16; ++k) {
-            uint32_t v = base[k];
-            base[k] = pre;
+            uint32_t v = local[k];
+            local[k] = pre;
             pre += v;
+        }
+
+        // Write back to global memory
+        #pragma unroll
+        for (int k = 0; k < 16; ++k) {
+            base[k] = local[k]; 
         }
     }
 }
@@ -351,36 +354,78 @@ void thrust_sort(GpuLayout &layout) {
     thrust::sort(d_ptr, d_ptr + n);
 }
 
+const std::vector<size_t> test_sizes{1<<24};
 int main(int argc, char* argv[]) {
 
-    size_t n = size_t(1) << 24; 
-
-    int count = 1;
-    if (argc > 1) count = atoi(argv[1]);
-
-    Tester tester(n);
-    GpuLayout layout;
-    double speedup_avg1 = 0.0, speedup_avg2 = 0.0, speedup_avg3 = 0.0, speedup_avg4 = 0.0, speedup_avg5 = 0.0;
-
-    for (int i = 0; i < count; i++) {
-        tester.init();
-        speedup_avg1 += tester.cpu_bench(radix_sort_tbb, "radix_sort_tbb");
-        speedup_avg2 += tester.gpu_bench(layout, setup_2, call_gpu_opt, "gpu_radix_sort_opt");
-        speedup_avg3 += tester.gpu_bench(layout, setup_1024, call_gpu_opt_2, "gpu_radix_sort_opt_2");
-        speedup_avg4 += tester.gpu_bench(layout, setup_1, call_bitonic_sort, "bitonic_sort");
-        speedup_avg5 += tester.gpu_bench(layout, setup_1, thrust_sort, "thrust_sort");
+    std::ofstream result_file("result.csv", std::ios::app);
+    std::ofstream ofs("result2.csv", std::ios::app);
+    if (!result_file.is_open()) {
+        std::cerr << "Failed to open result file." << std::endl;
+        return -1;
     }
-    speedup_avg1 /= count;
-    speedup_avg2 /= count;
-    speedup_avg3 /= count;
-    speedup_avg4 /= count;
-    speedup_avg5 /= count;
+    if (!ofs.is_open()) {
+        std::cerr << "Failed to open result2 file." << std::endl;
+        return -1;
+    }
+    result_file << "algorithm,size,seconds,speedup\n";
+    ofs << "algorithm,size,avg_seconds,avg_speedup\n";
+    for (auto n : test_sizes) {
+        Tester tester(n);
+        GpuLayout layout;
+        std::cout << "\n\nTesting size: " << n << " for 100 runs" << "\n\n";
+        double speedup_avg1 = 0.0, speedup_avg2 = 0.0, speedup_avg3 = 0.0, speedup_avg4 = 0.0, speedup_avg5 = 0.0;
+        double average_time1 = 0.0, average_time2 = 0.0, average_time3 = 0.0, average_time4 = 0.0, average_time5 = 0.0;
+        for (int i = 0; i < 100; i++) {
+            tester.init();
+            auto[x1, y1] =  tester.cpu_bench(radix_sort_tbb, "radix_sort_tbb");
+         //   auto[x2, y2] = tester.gpu_bench(layout, setup_2, call_gpu_opt, "gpu_radix_sort_opt");
+            auto[x3, y3] = tester.gpu_bench(layout, setup_1024, call_gpu_opt_2, "gpu_radix_sort_opt_2");
+            auto[x4, y4] = tester.gpu_bench(layout, setup_1, call_bitonic_sort, "bitonic_sort");
+            auto[x5, y5] = tester.gpu_bench(layout, setup_1, thrust_sort, "thrust_sort");
 
-    printf("radix_sort_tbb average speedup over %d runs: %.3fx\n", count, speedup_avg1);
-    printf("gpu_radix_sort_opt average speedup over %d runs: %.3fx\n", count, speedup_avg2);
-    printf("gpu_radix_sort_opt_2 average speedup over %d runs: %.3fx\n", count, speedup_avg3);
-    printf("bitonic_sort average speedup over %d runs: %.3fx\n", count, speedup_avg4);
-    printf("thrust_sort average speedup over %d runs: %.3fx\n", count, speedup_avg5);
+            result_file << "radix_sort_tbb," << n << "," << std::fixed << std::setprecision(5) << x1 << "," << std::fixed << std::setprecision(3) << y1 << "\n";
+           // result_file << "gpu_radix_sort_opt," << n << "," << std::fixed << std::setprecision(5) << x2 << "," << std::fixed << std::setprecision(3) << y2 << "\n";
+            result_file << "gpu_radix_sort_opt_2," << n << "," << std::fixed << std::setprecision(5) << x3 << "," << std::fixed << std::setprecision(3) << y3 << "\n";
+            result_file << "bitonic_sort," << n << "," << std::fixed << std::setprecision(5) << x4 << "," << std::fixed << std::setprecision(3) << y4 << "\n";
+            result_file << "thrust_sort," << n << "," << std::fixed << std::setprecision(5) << x5 << "," << std::fixed << std::setprecision(3) << y5 << "\n";            
+        
+            speedup_avg1 += y1;
+          //  speedup_avg2 += y2;
+            speedup_avg3 += y3; 
+            speedup_avg4 += y4;
+            speedup_avg5 += y5;
+
+            average_time1 += x1;
+          //  average_time2 += x2;
+            average_time3 += x3;
+            average_time4 += x4;
+            average_time5 += x5;
+        }
+
+        speedup_avg1 /= 100;
+      //  speedup_avg2 /= 100;
+        speedup_avg3 /= 100;
+        speedup_avg4 /= 100;
+        speedup_avg5 /= 100;
+        average_time1 /= 100;
+      //  average_time2 /= 100;
+        average_time3 /= 100;
+        average_time4 /= 100;
+        average_time5 /= 100;
+       
+        printf("Average speedup radix_sort_tbb: %.3fx, time: %.5f seconds\n", speedup_avg1, average_time1);
+      //  printf("Average speedup gpu_radix_sort_opt: %.3fx, time: %.5f seconds\n", speedup_avg2, average_time2);
+        printf("Average speedup gpu_radix_sort_opt_2: %.3fx, time: %.5f seconds\n", speedup_avg3, average_time3);
+        printf("Average speedup bitonic_sort: %.3fx, time: %.5f seconds\n", speedup_avg4, average_time4);
+        printf("Average speedup thrust_sort: %.3fx, time: %.5f seconds\n", speedup_avg5, average_time5);
+
+        ofs << "radix_sort_tbb," << n << "," << std::fixed << std::setprecision(5) << average_time1 << "," << std::fixed << std::setprecision(3) << speedup_avg1 << "\n";
+      //  ofs << "gpu_radix_sort_opt," << n << "," << std::fixed << std::setprecision(5) << average_time2 << "," << std::fixed << std::setprecision(3) << speedup_avg2 << "\n";
+        ofs << "gpu_radix_sort_opt_2," << n << "," << std::fixed << std::setprecision(5) << average_time3 << "," << std::fixed << std::setprecision(3) << speedup_avg3 << "\n";
+        ofs << "bitonic_sort," << n << "," << std::fixed << std::setprecision(5) << average_time4 << "," << std::fixed << std::setprecision(3) << speedup_avg4 << "\n";
+        ofs << "thrust_sort," << n << "," << std::fixed << std::setprecision(5) << average_time5 << "," << std::fixed << std::setprecision(3) << speedup_avg5 << "\n";
+
+    }
 
     return 0;
 }   

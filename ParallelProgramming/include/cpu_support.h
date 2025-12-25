@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <algorithm>
 #include <functional>
+#include <utility>
+#include <tuple>
 
 #include "gpu_support.h"
 #include <tbb/tbb.h>
@@ -223,7 +225,7 @@ private:
     }
 
 public:
-    double cpu_bench(std::function<void(uint32_t*, size_t)> func, const char *s) {
+    std::tuple<double, double> cpu_bench(std::function<void(uint32_t*, size_t)> func, const char *s) {
         //init();
 
         double current_time = get_time_in_seconds();
@@ -240,11 +242,11 @@ public:
         printf("CPU my %s sort time: %.5f seconds\n", s, elapsed_time);
         printf("speedup %.3fx\n\n", speedup);
 
-        return speedup;
+        return std::make_tuple(elapsed_time, speedup);
     }
 
     template<typename FS, typename FC>
-    double gpu_bench(GpuLayout&layout, FS &setup, FC &func, const char *s) {
+    std::tuple<double, double> gpu_bench(GpuLayout&layout, FS &setup, FC &func, const char *s) {
         // init();
         setup(data2, layout);
 
@@ -264,7 +266,7 @@ public:
         printf("GPU my %s sort time: %.5f seconds\n", s, elapsed_time);
         printf("speedup %.3fx\n\n", speedup);
 
-        return speedup;
+        return std::make_tuple(elapsed_time, speedup);
     }
 
     // 随机初始化
